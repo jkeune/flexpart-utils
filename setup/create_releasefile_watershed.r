@@ -19,7 +19,6 @@ library(ncdf4)
 library(maptools)
 
 # watersheds
-        worldmaps = readShapeSpatial("/user/data/gent/gvo000/gvo00090/vsc42383/data/terrsysmp/staticdata/TM_WORLD_BORDERS-0.2.shp")
         mybasins=readRDS("/user/data/gent/gvo000/gvo00090/vsc42383/data/terrsysmp/staticdata/mywatersheds_eur11_gt100km2.rds")
         basinnames=readRDS("/user/data/gent/gvo000/gvo00090/vsc42383/data/terrsysmp/staticdata/mywatershednames_eur11_gt100km2.rds")
 	basinnames[2247]="Guadalquivir"
