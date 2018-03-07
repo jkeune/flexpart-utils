@@ -1,3 +1,8 @@
-Useful FLEXPART scripts 
+# flexpart-utils
+Collection of useful FLEXPART tools and scripts
 
-# JKe 03-2018
+#### setup
+* create_releasefile_watershed.r
+Creates a RELEASE file to run FLEXPART with releases over each gridpoint within a watershed. 
+ 
+
