@@ -17,11 +17,11 @@ rm(list=ls())
 #  - dend: 	enddate of RELEASE
 #  - rundir:	run-directory, where RELEASE file should be written
 #  - bx: 	relaxation zone grid points to skip for the sponge zone release ((optional; default = 6))
-#  - inp: 	number of particles to be released at initialization ((optional; default = 50))
+#  - npi: 	number of particles to be released at initialization ((optional; default = 50))
 #
 ##
 # Example: 
-# Rscript create_releasefile_spongezone.r y 100 "20030101 100000" "20030101 100000" /user/scratch/gent/gvo000/gvo00090/vsc42383/flexpart_run/tests/init_v1 6 50
+# Rscript create_releasefile_spongezone.r y 100 "20030601 100000" "20030601 100000" /user/scratch/gent/gvo000/gvo00090/vsc42383/flexpart_run/tests/init_v1 6 50
 # JKe 24-04-2018
 #
 library(ncdf4)
@@ -34,19 +34,22 @@ np   	= as.double(args[2])
 dstart	= args[3]
 dend	= args[4]
 rundir	= args[5] 
-bx	= args[6]
+bx	= as.double(args[6])
 if(is.null(bx)){bx=6}
-npi	= args[7]
+cat(sprintf("%s \n",bx))
+npi	= as.double(args[7])
 if(is.null(npi)){npi=50}
+cat(sprintf("%s \n",npi))
 
 ## SETTINGS
 # paths
         ipath="/user/data/gent/gvo000/gvo00090/vsc42383/tools/flexpart/flexpart-utils/setup"
 	setwd(ipath)
 # grid
-        gridfile= nc_open("/user/data/gent/gvo000/gvo00090/vsc42383/data/terrsysmp/staticdata/focus_mask_eur11_315x315.nc")
-        lon	= ncvar_get(gridfile,"lon")
-        lat	= ncvar_get(gridfile,"lat")
+        gridfile= nc_open("/user/data/gent/gvo000/gvo00090/vsc42383/data/terrsysmp/staticdata/grid_cosmo.nc")
+	# cut COSMO domain to CCLM domain
+        lon	= ncvar_get(gridfile,"lon")[5:440,5:428]
+        lat	= ncvar_get(gridfile,"lat")[5:440,5:428]
 	nlon	= dim(lon)[1]
 	nlat	= dim(lon)[2]
 
@@ -61,12 +64,13 @@ if(is.null(npi)){npi=50}
 
 # a) Initilization
   if(init=="y"){
-	ilon	= round(c(lon),digits=4)
-	ilat	= round(c(lat),digits=4)
+	ilon	= round(c(lon[bx:(nlon-bx),bx:(nlat-bx)]),digits=4)
+	ilat	= round(c(lat[bx:(nlon-bx),bx:(nlat-bx)]),digits=4)
 
 	alld=NULL
 	for(i in 1:length(ilon)){
 	  alld	= c(alld,c(dstart,dstart,ilon[i],ilat[i],ilon[i],ilat[i],mag,lzl,uzl,npi,tme,i,sep))
+	  cat(".")
 	}
 	ofile	= sprintf("%s/RELEASES",rundir)
 	system(paste("cp ../templates/RELEASES_header", ofile))
