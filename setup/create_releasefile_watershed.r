@@ -95,23 +95,24 @@ rundir	= args[5]
 	sep	= "+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++"
 
 	alld=NULL
-	alld=c( "*************************************************************************",
-		"*                                                                       *",
-		"*                                                                       *",
-		"*   Input file for the Lagrangian particle dispersion model FLEXPART    *",
-		"*                        Please select your options                     *",
-		"*                                                                       *",
-		"*                                                                       *",
-		"*                                                                       *",
-		"*************************************************************************",
-		"+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++",
-		"1                          Total number of species emitted		  ",
-		"24                         Index of species in file SPECIES		  ",
-		"=========================================================================")
+	#alld=c( "*************************************************************************",
+	#	"*                                                                       *",
+	#	"*                                                                       *",
+	#	"*   Input file for the Lagrangian particle dispersion model FLEXPART    *",
+	#	"*                        Please select your options                     *",
+	#	"*                                                                       *",
+	#	"*                                                                       *",
+	#	"*                                                                       *",
+	#	"*************************************************************************",
+	#	"+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++",
+	#	"1                          Total number of species emitted		  ",
+	#	"24                         Index of species in file SPECIES		  ",
+	#	"=========================================================================")
 	for(i in 1:length(slon)){
 	  alld	= c(alld,c(dstart,dend,ilon[i],ilat[i],ilon[i],ilat[i],mag,lzl,uzl,np,tme,i,sep))
 	}
 	ofile	= sprintf("%s/RELEASES",rundir)
-	write.table(alld,file=ofile,row.names=FALSE,col.names=FALSE,quote=F,append=FALSE)
+	system(paste("cp RELEASES_header", ofile))
+	write.table(alld,file=ofile,row.names=FALSE,col.names=FALSE,quote=F,append=TRUE)
 
 cat("Successfully created:   ", ofile, "\n")
