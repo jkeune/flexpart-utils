@@ -21,7 +21,7 @@ rm(list=ls())
 #
 ##
 # Example: 
-# Rscript create_releasefile_spongezone.r y 100 "20030601 100000" "20030601 100000" /user/scratch/gent/gvo000/gvo00090/vsc42383/flexpart_run/tests/init_v1 6 50
+# Rscript create_releasefile_spongezone.r y 100 "20030601 010000" "20030601 230000" /user/scratch/gent/gvo000/gvo00090/vsc42383/flexpart_run/tests/sponge_v1 6 50
 # JKe 24-04-2018
 #
 library(ncdf4)
@@ -64,8 +64,8 @@ cat(sprintf("%s \n",npi))
 
 # a) Initilization
   if(init=="y"){
-	ilon	= round(c(lon[bx:(nlon-bx),bx:(nlat-bx)]),digits=4)
-	ilat	= round(c(lat[bx:(nlon-bx),bx:(nlat-bx)]),digits=4)
+	ilon	= round(c(lon[(bx+1):(nlon-bx),bx:(nlat-bx)]),digits=4)
+	ilat	= round(c(lat[(bx+1):(nlon-bx),bx:(nlat-bx)]),digits=4)
 
 	alld=NULL
 	for(i in 1:length(ilon)){
@@ -78,15 +78,15 @@ cat(sprintf("%s \n",npi))
   }
 
 # b) Sponge zone
-#	ilon	= round(c(lon[bx,bx],lon[nlon-bx,bx],lon[bx,nlat-bx],lon[nlon-bx,nlat-bx]),digits=4)
-#	ilat	= round(c(lat[bx,bx],lat[nlon-bx,bx],lat[bx,nlat-bx],lat[nlon-bx,nlat-bx]),digits=4)
-#
-#	alld=NULL
-#	for(i in 1:length(ilon)){
-#	  alld	= c(alld,c(dstart,dend,ilon[i],ilat[i],ilon[i],ilat[i],mag,lzl,uzl,np,tme,i,sep))
-#	}
-#	ofile	= sprintf("%s/RELEASES",rundir)
-#	if(init=="n"){system(paste("cp ../templates/RELEASES_header", ofile))}
-#	write.table(alld,file=ofile,row.names=FALSE,col.names=FALSE,quote=F,append=TRUE)
+	ilon	= round(c(lon[bx+1,(bx+1):(nlat-bx)],lon[nlon-bx,(bx+1):(nlat-bx)],lon[(bx+1):(nlon-bx),nlat-bx],lon[(bx+1):(nlon-bx),bx+1]),digits=4)
+	ilat	= round(c(lat[bx+1,(bx+1):(nlat-bx)],lat[nlon-bx,(bx+1):(nlat-bx)],lat[(bx+1):(nlon-bx),nlat-bx],lat[(bx+1):(nlon-bx),bx+1]),digits=4)
+
+	alld=NULL
+	for(i in 1:length(ilon)){
+	  alld	= c(alld,c(dstart,dend,ilon[i],ilat[i],ilon[i],ilat[i],mag,lzl,uzl,np,tme,i,sep))
+	}
+	ofile	= sprintf("%s/RELEASES",rundir)
+	if(init=="n"){system(paste("cp ../templates/RELEASES_header", ofile))}
+	write.table(alld,file=ofile,row.names=FALSE,col.names=FALSE,quote=F,append=TRUE)
 
 cat("Successfully created:   ", ofile, "\n")
