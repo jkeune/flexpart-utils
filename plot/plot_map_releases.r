@@ -6,6 +6,11 @@ library(abind)
 library(maptools)
 library(Hmisc)
 
+# Use UGent Panno Font 
+# loaded via https://statr.me/2014/01/using-system-fonts-in-r-graphs/ using showtext
+library(showtext)
+font_add("ugent", regular = "/user/scratch/gent/gvo000/gvo00090/vsc42383/testbed/ttfs/UGentPannoText-Medium.ttf")
+
 ## SETTINGS
 # worldmaps
         worldmaps = readShapeSpatial("/user/data/gent/gvo000/gvo00090/vsc42383/data/terrsysmp/staticdata/TM_WORLD_BORDERS-0.2.shp")
@@ -28,17 +33,10 @@ library(Hmisc)
         nlon    = dim(lon)[1]
         nlat    = dim(lon)[2]
 
-# a) init
-	bx 	= 6
-        ilon    = round(c(lon[(bx+1):(nlon-bx),bx:(nlat-bx)]),digits=4)
-        ilat    = round(c(lat[(bx+1):(nlon-bx),bx:(nlat-bx)]),digits=4)
-
-# b) Sponge zone
-        ilon    = round(c(lon[bx+1,(bx+1):(nlat-bx)],lon[nlon-bx,(bx+1):(nlat-bx)],lon[(bx+1):(nlon-bx),nlat-bx],lon[(bx+1):(nlon-bx),bx+1]),digits=4)
-        ilat    = round(c(lat[bx+1,(bx+1):(nlat-bx)],lat[nlon-bx,(bx+1):(nlat-bx)],lat[(bx+1):(nlon-bx),nlat-bx],lat[(bx+1):(nlon-bx),bx+1]),digits=4)
 
 # PLOT
 pdf("/user/data/gent/gvo000/gvo00090/vsc42383/plots/flexpart/FLEXPART_CORDEX-domain_setups.pdf",width=12,height=8)
+showtext.begin()                ## turn on showtext
 	par(mar=c(0.5,0.5,0.5,0.5),oma=c(0,0,0,0),mgp=c(1.75,0.75,0))
 	plot(c(-45,70),c(20,75),t="n",xlab="",ylab="",xaxt="n",yaxt="n")
         plot(worldmaps,col=adjustcolor("white",0.1),add=T,xlim=c(-55,75),ylim=c(20,75),lwd=0.75, usePolypath = FALSE, border="grey50")
@@ -83,4 +81,5 @@ pdf("/user/data/gent/gvo000/gvo00090/vsc42383/plots/flexpart/FLEXPART_CORDEX-dom
 	#legend("bottom",	
 		#c("CORDEX","F1: ideal (424x412)","CORDEX - relax","F2: (361x352)",NA, "F3: (285x242)"),
 		#col=c("black",col3d,"black",col1d,NA,colera),lty=c(1,1,2,1,NA,1),lwd=c(2,3,2,3,3),bty="n",ncol=3)	
+showtext_end()                  ## turn off showtext
 dev.off()
